@@ -1,0 +1,28 @@
+services:
+  app:
+    container_name: node_app
+    build: .
+    ports:
+      - "3000:3000" # Maps the container's port 3000 to the host's port 3000
+    volumes:
+      - .:/usr/src/app # Mounts the local project directory to the container
+      - /usr/src/app/node_modules # Avoids mounting node_modules, so they're handled inside the container
+    environment:
+      - NODE_ENV=development # You can set environment variables here
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    volumes:
+      - db-data:/var/lib/postgresql/data # Persistent data storage for the database
+
+volumes:
+  db-data:
